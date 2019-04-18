@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './normalize.css';
-import './index.css';
+import './css/index.css';
 
 class Game extends React.Component {
   constructor(props) {
@@ -49,9 +48,9 @@ class Game extends React.Component {
       [2, 4, 6]
     ];
 
-    for (let i = 0; i < lines.length; i++) {
-      const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+    for (let i of lines) {
+      const [a, b, c] = i;
+      if (squares[a] === squares[b] && squares[a] === squares[c]) {
         return squares[a];
       }
     }
@@ -69,10 +68,10 @@ class Game extends React.Component {
     for (let i of board) {
       if (i.includes(square)) {
         row = board.indexOf(i);
+        column = board[row].indexOf(square);
         break;
       }
     }
-    column = board[row].indexOf(square);
 
     return [row, column];
   }
@@ -92,11 +91,18 @@ class Game extends React.Component {
 
     for (let i = 0; i < history.length / 2; i++) {
       const desc = i
-        ? `Go to move #${i}`
-        : 'Go to game start';
+        ? `${(i % 2) === 0 ? 'O' : 'X'} played at (${this.state.history[i * 2 + 1].coordinates})`
+        : 'Start';
+      let activeStep = i === this.state.stepNumber ? 1 : 0;
+
       moves.push(
         <li key={i}>
-          <button onClick={() => this.jumpTo(i)}>{desc}</button>
+          <button
+            onClick={() => this.jumpTo(i)}
+            className={activeStep ? "active-step" : ""}
+          >
+            {desc}
+          </button>
         </li>
       )
     }
@@ -115,7 +121,9 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <hr/>
+          <p>Moves</p>
+          <ol className="history">{moves}</ol>
         </div>
       </div>
     );
