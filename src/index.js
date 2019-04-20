@@ -2,41 +2,69 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/index.css';
 
+/**
+ * represents the Game component
+ * @extends React.Component
+ */
 class Game extends React.Component {
+  /**
+   * create a game
+   * @param {Object} props - always passed to access parent functions
+   */
   constructor(props) {
     super(props);
     this.state = {
-      history: [
-        {squares: Array(9).fill(null)},
+      boardHistory: [
+        {squares: Array(9).fill(null)}
+      ],
+      coordinateHistory: [
         {coordinates: Array(2).fill(null)}
       ],
+      sortAscending: true,
       stepNumber: 0,
       xIsNext: true
     };
   }
 
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber * 2 + 2);
-    const currentBoard = history[this.state.stepNumber * 2];
+  /**
+   * event listener for square click on game board
+   * @param {number} i - index of the square that was clicked
+   */
+  onSquareClick(i) {
+    const boardHistory = this.state.boardHistory.slice(0, this.state.stepNumber + 1); // slice in case player has jumped back in history
+    const coordinateHistory = this.state.coordinateHistory.slice(0, this.state.stepNumber + 1); // slice in case player has jumped back in history
+    const currentBoard = boardHistory[this.state.stepNumber];
     const currentSquares = currentBoard.squares.slice();
     const currentLocation = this.getCoordinates(i);
 
+    // return early if someone has won or the square is already filled
     if (this.calculateWinner(currentSquares) || currentSquares[i]) {
       return;
     }
 
+    // set value of square based on whose turn it is
     currentSquares[i] = this.state.xIsNext ? 'X' : 'O';
+
+    // set state to save history and prepare for next turn
     this.setState({
-      history: history.concat([
-        {squares: currentSquares},
+      boardHistory: boardHistory.concat([
+        {squares: currentSquares}
+      ]),
+      coordinateHistory: coordinateHistory.concat([
         {coordinates: currentLocation}
       ]),
-      stepNumber: history.length / 2,
+      stepNumber: boardHistory.length,
       xIsNext: !this.state.xIsNext
     });
   }
 
+  /**
+   * checks if there is a winning sequence
+   * @param {number[]} squares - squares to check from
+   * @returns {(number[]|null)} a winning sequence or null
+   */
   calculateWinner(squares) {
+    // array of winning sequences
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -48,7 +76,8 @@ class Game extends React.Component {
       [2, 4, 6]
     ];
 
-    for (let i of lines) {
+    // check if all values in locations in i are same
+    for (const i of lines) {
       const [a, b, c] = i;
       if (squares[a] === squares[b] && squares[a] === squares[c]) {
         return squares[a];
@@ -57,7 +86,13 @@ class Game extends React.Component {
     return null;
   }
 
+  /**
+   * get the coordinates of a square
+   * @param {number} square - the index of a square on the board
+   * @returns {number[]} the row and column number of the square
+   */
   getCoordinates(square) {
+    // 2D array to locate argument square on the board
     const board = [
       [0, 1, 2],
       [3, 4, 5],
@@ -65,7 +100,8 @@ class Game extends React.Component {
     ];
     let row, column;
 
-    for (let i of board) {
+    // check which row and column contain square
+    for (const i of board) {
       if (i.includes(square)) {
         row = board.indexOf(i);
         column = board[row].indexOf(square);
@@ -76,61 +112,105 @@ class Game extends React.Component {
     return [row, column];
   }
 
+  /**
+   * jumps to a step in the game history
+   * @param {number} step - the step to jump to
+   */
   jumpTo(step) {
+    // set stepNumber to step argument and check whose turn it is
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0
     });
   }
 
+  /**
+   * event listener for sort button click
+   */
+  onSortClick() {
+    // reverses the sort direction
+    this.setState({
+      sortAscending: !this.state.sortAscending
+    });
+  }
+
+  /**
+   * renders a Game component
+   * @returns {Object} a rendered Game
+   */
   render() {
-    const history = this.state.history;
-    const currentBoard = history[this.state.stepNumber * 2];
-    const winner = this.calculateWinner(currentBoard.squares);
-    let moves = [];
+    const boardHistory = this.state.boardHistory;
+    const coordinateHistory = this.state.coordinateHistory;
+    const currentSquares = boardHistory[this.state.stepNumber].squares.slice();
+    const winner = this.calculateWinner(currentSquares);
+    const status = winner
+      ? `Winner: ${winner}`
+      : `Next Player: ${this.state.xIsNext ? 'X' : 'O'}`;
+    const sort = this.state.sortAscending; // true if history is ascending
+    const limit = sort ? boardHistory.length : 0;
+    const steps = [], moves = []; // array of step number and associated moves
 
-    for (let i = 0; i < history.length / 2; i++) {
-      const desc = i
-        ? `${(i % 2) === 0 ? 'O' : 'X'} played at (${this.state.history[i * 2 + 1].coordinates})`
+    // loops through number of steps in direction of sort
+    for (let index = sort ? 0 : boardHistory.length - 1; sort ? index < limit : index >= limit; sort ? index++ : index--) {
+      const desc = index
+        ? `${(index % 2) === 0 ? 'O' : 'X'} played at (${coordinateHistory[index].coordinates})`
         : 'Start';
-      let activeStep = i === this.state.stepNumber ? 1 : 0;
+      let activeStep = index === this.state.stepNumber ? 1 : 0; // check if index is the active step for css class
 
+      // push step numbers and move buttons
+      steps.push(<div key={index}>{index}</div>);
       moves.push(
-        <li key={i}>
+        <div key={index}>
           <button
-            onClick={() => this.jumpTo(i)}
+            onClick={() => this.jumpTo(index)}
             className={activeStep ? "active-step" : ""}
           >
             {desc}
           </button>
-        </li>
-      )
+        </div>
+      );
     }
-
-    let status = winner
-      ? `Winner: ${winner}`
-      : `Next Player: ${this.state.xIsNext ? 'X' : 'O'}`;
 
     return (
       <div className="game">
-        <div className="game-board">
-          <Board
-            squares={currentBoard.squares}
-            onClick={(i) => this.handleClick(i)}
-          />
-        </div>
+        <Board
+          squares={currentSquares}
+          onClick={(i) => this.onSquareClick(i)}
+        />
+
         <div className="game-info">
           <div>{status}</div>
-          <hr/>
-          <p>Moves</p>
-          <ol className="history">{moves}</ol>
+          <div className="game-info-separator"></div>
+          <div className="game-info-history-header">
+            <div>Moves</div>
+            <button onClick={() => this.onSortClick()}>
+              Sort {this.state.sortAscending ? "▼" : "▲"}
+            </button>
+          </div>
+          <div className="game-info-history">
+            <div className="game-info-steps">
+              {steps}
+            </div>
+            <div className="game-info-moves">
+              {moves}
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 }
 
+/**
+ * represents the game Board component
+ * @extends React.Component
+ */
 class Board extends React.Component {
+  /**
+   * renders a single Square component
+   * @param {number} i - the index of the square to render
+   * @returns {Object} a rendered Square
+   */
   renderSquare(i) {
     return (
       <Square
@@ -141,6 +221,10 @@ class Board extends React.Component {
     );
   }
 
+  /**
+   * renders a Board component filled with Squares
+   * @returns {Object} a rendered Board
+   */
   render() {
     const rows = [];
     for (let i = 0; i < 3; i++) {
@@ -152,13 +236,19 @@ class Board extends React.Component {
     }
 
     return (
-      <div>
+      <div className="game-board">
         {rows}
       </div>
     );
   }
 }
 
+/**
+ * represents a Square component
+ * @class
+ * @param {Object} props - always passed to access parent functions
+ * @returns {Object} a rendered square button
+ */
 function Square(props) {
   return (
     <button
@@ -170,7 +260,8 @@ function Square(props) {
   );
 }
 
+// render the game into the DOM in #root
 ReactDOM.render(
-  <Game />,
+  <Game/>,
   document.getElementById('root')
 );

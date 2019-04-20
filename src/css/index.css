@@ -13,75 +13,129 @@ body {
   align-items: center;
 }
 
-hr {
-  background-color: #999;
-  border: none;
-  height: 1px;
-}
-
 .game {
   display: flex;
   flex-direction: row;
 }
 
 .game-info {
+  display: flex;
+  flex-direction: column;
   margin-left: 20px;
 }
 
-.history {
-  counter-reset: historyCounter -1;
-  list-style: none;
-  padding: 0;
+.game-info-separator {
+  background-color: #999;
+  margin: 5px 0;
+  height: 1px;
 }
 
-.history button {
+.game-info button {
   background-color: #f8f9fa;
   border: 1px solid transparent;
-  border-radius: .25rem;
   color: #000;
   font-size: .875rem;
   line-height: 1.5;
   padding: .25rem .5rem;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
-.history button:focus {
+.game-info button:focus {
   outline: none;
 }
 
-.history button:hover {
+.game-info button:hover {
   background-color: #dae0e5;
   border-color: #d3d9df;
 }
 
-.history button.active-step {
+.game-info-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.game-info-history {
+  flex: 1 200px;
+  display: flex;
+  width: 12rem;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+.game-info-history button.active-step {
   background-color: #2979ff;
   color: #fff;
 }
 
-.history > li {
-  counter-increment: historyCounter;
+.game-info-steps {
+  display: flex;
+  flex-direction: column;
 }
 
-.history > li::before {
-  content: counter(historyCounter) " ";
+.game-info-steps > * {
+  font-size: .875rem;
+  line-height: 1.5;
+  margin-bottom: 5px;
+  padding: .25rem .5rem .25rem 0;
+  border: 1px solid transparent;
+}
+
+.game-info-moves {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-info-moves > div {
+  margin-bottom: 5px
+}
+
+.game-info-moves > div:last-of-type {
+  margin-bottom: 0;
+}
+
+.game-info-moves button {
+  width: 100%;
 }
 
 .square {
   background: #fff;
   border: 1px solid #999;
   float: left;
-  font-size: 40px;
+  font-size: 80px;
   font-weight: bold;
-  line-height: 50px;
-  height: 50px;
+  line-height: 100px;
+  height: 100px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 50px;
+  width: 100px;
 }
 
 .square:focus {
   outline: none;
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 10px 10px #f1f1f1;
+  border-left: solid 5px transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 10px 10px #999;
+  border-left: solid 5px transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  box-shadow: inset 0 0 10px 10px #555;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
 }
