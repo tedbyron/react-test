@@ -134,6 +134,9 @@ class Game extends React.Component {
     });
   }
 
+  /**
+   * resets the game state except the sort direction
+   */
   reset() {
     this.setState({
       boardHistory: [
@@ -161,7 +164,7 @@ class Game extends React.Component {
       : currentSquares.includes(null)
         ? `Next Player: ${this.state.xIsNext ? 'X' : 'O'}`
         : 'Draw';
-    const result = !(status.charAt(0) === 'N');
+    const result = !(status.charAt(0) === 'N'); // for .game-info-separator-result class
     const sort = this.state.sortAscending; // true if history is ascending
     const limit = sort ? boardHistory.length : 1;
     const steps = [], moves = []; // array of step number and associated moves
@@ -169,7 +172,7 @@ class Game extends React.Component {
     // loops through number of steps in direction of sort
     for (let index = sort ? 1 : boardHistory.length - 1; sort ? index < limit : index >= limit; sort ? index++ : index--) {
       const desc = `${(index % 2) === 0 ? 'O' : 'X'} played at (${coordinateHistory[index].coordinates})`;
-      let activeStep = index === this.state.stepNumber ? 1 : 0; // check if index is the active step for css class
+      let activeStep = index === this.state.stepNumber ? 1 : 0; // check if index is the active step for .active-step class
 
       // push step numbers and move buttons
       steps.push(<div key={index}>{index}</div>);
