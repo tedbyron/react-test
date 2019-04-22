@@ -30,6 +30,10 @@ body {
   height: 1px;
 }
 
+.game-info-separator-result {
+  background-color: #2979ff;
+}
+
 .game-info button {
   background-color: #f8f9fa;
   border: 1px solid transparent;
@@ -100,7 +104,7 @@ body {
 }
 
 .square {
-  background: #fff;
+  background-color: #fff;
   border: 1px solid #999;
   float: left;
   font-size: 80px;
@@ -116,6 +120,10 @@ body {
 
 .square:focus {
   outline: none;
+}
+
+.highlight {
+  background: #fff9c4;
 }
 
 ::-webkit-scrollbar {
