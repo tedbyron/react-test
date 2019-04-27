@@ -1,27 +1,27 @@
-@import './_normalize.css';
-
-html {
-  height: 100%;
-}
-
-body {
-  font: 1rem "Iosevka SS07", monospace;
-  height: 100%;
+.game {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
-.game {
-  display: flex;
-  flex-direction: row;
+@media (min-width: 550px) {
+  .game {
+    flex-direction: row;
+    align-items: stretch;
+  }
 }
 
 .game-info {
   display: flex;
   flex-direction: column;
-  margin-left: 20px;
+  margin-top: 20px;
+}
+
+@media (min-width: 550px) {
+  .game-info {
+    margin-top: 0;
+    margin-left: 20px;
+  }
 }
 
 .game-info-separator {
@@ -101,29 +101,6 @@ body {
 
 .game-info-moves button {
   width: 100%;
-}
-
-.square {
-  background-color: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 80px;
-  font-weight: bold;
-  line-height: 100px;
-  height: 100px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 100px;
-}
-
-.square:focus {
-  outline: none;
-}
-
-.highlight {
-  background: #fff9c4;
 }
 
 ::-webkit-scrollbar {
