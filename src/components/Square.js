@@ -1,5 +1,4 @@
 import React from 'react';
-import './Square.css';
 
 /**
  * represents a Square component

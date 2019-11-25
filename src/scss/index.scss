@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  font-family: "Iosevka SS07", monospace;
+  font-family: $font-family;
   height: 100%;
   display: flex;
   justify-content: center;
