@@ -1,6 +1,8 @@
 # react-tic-tac-toe
 > React tic-tac-toe with extras
 
+<img alt="tic tac toe screenshot" src="screen.png" width="500">
+
 ## Resources
 - [Create React App](https://github.com/facebook/create-react-app)
 - [Tutorial: Intro to React](https://reactjs.org/tutorial/tutorial.html)
